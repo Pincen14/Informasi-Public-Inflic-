@@ -8,7 +8,7 @@
     {{-- SLOT CONTENT --}}
     <div class="py-12">
 
-        <!-- TEST VISUAL (WAJIB ADA) -->
+
         <div class="max-w-7xl mx-auto px-6 mb-6">
             <h1 class="text-3xl font-bold text-red-600">
                 ISI DASHBOARD + HOMEPAGE

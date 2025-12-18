@@ -29,7 +29,8 @@
         @foreach($products ?? range(1,6) as $product)
         <div class="bg-white rounded-2xl p-4 shadow hover:shadow-lg transition">
             <img src="https://simplesentimental.com/cdn/shop/products/IMG_2561_jpg_2000x.jpg?v=1680206421" class="rounded-xl mb-4">
-            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Belum Ditemukan</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Hilang</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Kelas 2.04</span>
             <h4 class="font-semibold mt-2">{{ $product['name'] ?? 'Product Name' }}</h4>
             <p class="text-sm text-gray-500">Ditemukan tumbler seperti gambar diatas, tumbler bisa diambil  di  satpam lobby</p>
             {{-- <p class="font-bold mt-1">{{ $product['price'] ?? '$29.90' }}</p> --}}
@@ -53,7 +54,8 @@
             <p class="font-bold">$29.90</p>
             <button class="mt-3 w-full bg-black text-white rounded-full py-1 text-sm">Buy Now</button> --}}
             <img src="https://www.mahada.co.id/wp-content/uploads/2021/06/Tumbler-Custom-Berbahan-Plastik-Dengan-Model-Insert-Paper-Warna-Hitam-4.jpg" class="rounded-xl mb-4">
-            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Belum Ditemukan</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Hilang</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Perpustakaan</span>
             <h4 class="font-semibold mt-2">{{ $product['name'] ?? 'Product Name' }}</h4>
             <p class="text-sm text-gray-500">Ditemukan tumbler seperti gambar diatas, tumbler bisa diambil  di  satpam lobby</p>
             {{-- <p class="font-bold mt-1">{{ $product['price'] ?? '$29.90' }}</p> --}}
@@ -73,9 +75,9 @@
             <h2 class="text-3xl font-bold mb-2">Masukkan Barang yang Kamu Temukan?</h2>
             {{-- <p class="text-gray-300">Subscribe to get updates and recommendations.</p> --}}
         </div>
-        <form class="flex items-center gap-2">
+        <form class="flex items-center gap-2 justify-end">
             {{-- <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-full text-black"> --}}
-            <button class="bg-white text-black px-6 py-2 rounded-full">Send</button>
+            <button class="bg-white text-black px-6 py-2 rounded-full">Upload</button>
         </form>
     </div>
 </section>

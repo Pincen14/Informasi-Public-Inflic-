@@ -37,7 +37,7 @@ Route::get('/home', [HomeController::class, 'index'])
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('homepage');
 })->middleware(['auth'])->name('dashboard');
 
 /*
