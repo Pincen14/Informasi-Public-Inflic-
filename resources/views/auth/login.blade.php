@@ -12,20 +12,13 @@
         .slide {
             transition: opacity 1.2s ease-in-out;
         }
-
         .primary-color { background-color: #1a0f91; }
         .primary-hover:hover { background-color: #150c70; }
         .text-primary { color: #1a0f91; }
 
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .fade-up {
@@ -41,18 +34,14 @@
     <div class="hidden lg:flex lg:w-1/2 relative bg-gray-900">
         <div class="absolute inset-0 bg-black/50 z-10"></div>
 
-        <!-- Slides -->
         <div id="slide-0" class="slide absolute inset-0 opacity-100">
-            <img src="{{ asset('images/login-register1.jpeg') }}"
-              class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register1.jpeg') }}" class="w-full h-full object-cover">
         </div>
         <div id="slide-1" class="slide absolute inset-0 opacity-0">
-           <img src="{{ asset('images/login-register2.jpeg') }}"
-                 class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register2.jpeg') }}" class="w-full h-full object-cover">
         </div>
         <div id="slide-2" class="slide absolute inset-0 opacity-0">
-            <img src="{{ asset('images/login-register3.jpeg') }}"
-                 class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register3.jpeg') }}" class="w-full h-full object-cover">
         </div>
 
         <div class="relative z-20 p-12 flex flex-col justify-end text-white fade-up">
@@ -63,7 +52,6 @@
                 Pastikan barang kesayanganmu selalu bersamamu
             </p>
 
-            <!-- Indicators -->
             <div class="flex gap-2">
                 <button onclick="goToSlide(0)" id="indicator-0" class="h-1.5 w-10 rounded-full bg-white"></button>
                 <button onclick="goToSlide(1)" id="indicator-1" class="h-1.5 w-2 rounded-full bg-white/40"></button>
@@ -77,7 +65,7 @@
         <div class="w-full max-w-sm fade-up">
 
             <div class="mb-8">
-                <h1 class="text-3xl md:text-4xl font-semibold text-primary mb-2 tracking-tight animate-fade">
+                <h1 class="text-3xl md:text-4xl font-semibold text-primary mb-2">
                     Welcome to Infogritas
                 </h1>
                 <p class="text-gray-500 text-sm">
@@ -100,7 +88,7 @@
 
                 <div>
                     <label class="block text-xs text-gray-600 mb-1">Email</label>
-                    <input type="text" name="email" required
+                    <input type="email" name="email" required
                            class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
 
@@ -108,9 +96,6 @@
                     <label class="block text-xs text-gray-600 mb-1">Password</label>
                     <input type="password" name="password" required
                            class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none">
-                    <div class="text-right mt-1">
-                        <a href="#" class="text-xs text-gray-400 hover:text-gray-600">Lupa password?</a>
-                    </div>
                 </div>
 
                 <div class="flex items-center text-xs">
@@ -119,7 +104,7 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full py-2.5 rounded-md text-white font-medium transition transform hover:-translate-y-0.5 primary-color primary-hover">
+                        class="w-full py-2.5 rounded-md text-white font-medium primary-color primary-hover">
                     Login
                 </button>
             </form>
@@ -145,17 +130,13 @@
     function goToSlide(index) {
         for (let i = 0; i < 3; i++) {
             document.getElementById(`slide-${i}`).classList.replace('opacity-100','opacity-0');
-            document.getElementById(`indicator-${i}`).className =
-                "h-1.5 w-2 rounded-full bg-white/40";
+            document.getElementById(`indicator-${i}`).className = "h-1.5 w-2 rounded-full bg-white/40";
         }
 
         document.getElementById(`slide-${index}`).classList.replace('opacity-0','opacity-100');
-        document.getElementById(`indicator-${index}`).className =
-            "h-1.5 w-10 rounded-full bg-white";
-
+        document.getElementById(`indicator-${index}`).className = "h-1.5 w-10 rounded-full bg-white";
         document.getElementById('slide-title').textContent = slides[index].title;
         document.getElementById('slide-description').textContent = slides[index].description;
-
         currentSlide = index;
     }
 

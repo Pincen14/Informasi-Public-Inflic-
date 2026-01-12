@@ -10,7 +10,6 @@
 
     <style>
         .slide { transition: opacity 1.2s ease-in-out; }
-
         .primary-color { background-color: #1a0f91; }
         .primary-hover:hover { background-color: #150c70; }
         .text-primary { color: #1a0f91; }
@@ -32,16 +31,13 @@
         <div class="absolute inset-0 bg-black/50 z-10"></div>
 
         <div id="slide-0" class="slide absolute inset-0 opacity-100">
-            <img src="{{ asset('images/login-register1.jpeg') }}"
-              class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register1.jpeg') }}" class="w-full h-full object-cover">
         </div>
         <div id="slide-1" class="slide absolute inset-0 opacity-0">
-           <img src="{{ asset('images/login-register2.jpeg') }}"
-                 class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register2.jpeg') }}" class="w-full h-full object-cover">
         </div>
         <div id="slide-2" class="slide absolute inset-0 opacity-0">
-            <img src="{{ asset('images/login-register3.jpeg') }}"
-                 class="w-full h-full object-cover">
+            <img src="{{ asset('images/login-register3.jpeg') }}" class="w-full h-full object-cover">
         </div>
 
         <div class="relative z-20 p-12 flex flex-col justify-end text-white fade-up">
@@ -60,12 +56,12 @@
         </div>
     </div>
 
-    <!-- RIGHT : REGISTER FORM -->
+    <!-- RIGHT : REGISTER -->
     <div class="w-full lg:w-1/2 flex items-center justify-center px-8 overflow-y-auto">
         <div class="w-full max-w-sm py-8 fade-up">
 
             <div class="mb-8">
-                <h1 class="text-3xl md:text-4xl font-semibold text-primary mb-2 tracking-tight">
+                <h1 class="text-3xl md:text-4xl font-semibold text-primary mb-2">
                     Welcome to Infogritas
                 </h1>
                 <p class="text-gray-500 text-sm">
@@ -115,7 +111,7 @@
                 <div>
                     <label class="block text-xs text-gray-600 mb-1">Role</label>
                     <select name="role" required
-                            class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none text-gray-600">
+                            class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">Pilih Role</option>
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
@@ -123,7 +119,7 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full py-2.5 rounded-md text-white font-medium transition transform hover:-translate-y-0.5 primary-color primary-hover">
+                        class="w-full py-2.5 rounded-md text-white font-medium primary-color primary-hover">
                     Register
                 </button>
             </form>
@@ -158,7 +154,6 @@
 
         document.getElementById('slide-title').textContent = slides[index].title;
         document.getElementById('slide-description').textContent = slides[index].description;
-
         currentSlide = index;
     }
 

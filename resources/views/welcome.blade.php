@@ -6,6 +6,7 @@
 
     <title>Welcome</title>
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet"/>
 
@@ -93,12 +94,6 @@
             box-shadow: 0 12px 30px rgba(0,0,0,.3);
         }
 
-        .footer {
-            margin-top: 48px;
-            font-size: 12px;
-            opacity: .6;
-        }
-
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -141,7 +136,6 @@
             <a href="{{ route('register') }}" class="btn">Daftar</a>
             <a href="{{ route('login') }}" class="btn">Masuk</a>
         </div>
-
     </div>
 </div>
 
