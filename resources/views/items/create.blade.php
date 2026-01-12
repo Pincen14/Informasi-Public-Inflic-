@@ -16,14 +16,14 @@
 
     <!-- Error Messages -->
     @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <p class="font-bold mb-2">Ada Error:</p>
-            <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <p class="font-bold mb-2">Ada Error:</p>
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <!-- Form Card -->
@@ -48,10 +48,9 @@
                         value="{{ old('nama_item') }}"
                         placeholder="Contoh: Dompet Hitam, HP Samsung, Kacamata"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('nama_item') border-red-500 @enderror"
-                        required
-                    >
+                        required>
                     @error('nama_item')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -65,65 +64,50 @@
                         id="description"
                         rows="4"
                         placeholder="Jelaskan ciri-ciri barang, warna, merek, kondisi, dll..."
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('description') border-red-500 @enderror"
-                    >{{ old('description') }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
                     @error('description')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <!-- Upload Foto -->
-                <div class="mb-6">
+                <div class="mb-4">
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
                         Foto Barang <span class="text-red-500">*</span>
                     </label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-purple-500 transition">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none">
+                                    <span>Upload foto</span>
+                                    <input
+                                        id="image"
+                                        name="image"
+                                        type="file"
+                                        accept="image/*"
+                                        class="sr-only"
+                                        onchange="previewImage(event)"
+                                        required>
+                                </label>
+                                <p class="pl-1">atau drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, JPEG maksimal 2MB</p>
+                        </div>
+                    </div>
 
-                    <!-- Upload Area -->
-                    <label
-                        for="image"
-                        class="relative flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-purple-500 transition"
-                    >
-                        <!-- Icon -->
-                        <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 16l4-4a3 3 0 014 0l4 4m0 0l4-4a3 3 0 014 0M7 8h10" />
-                        </svg>
-
-                        <!-- Text -->
-                        <p class="text-sm text-gray-600">
-                            <span class="font-semibold text-purple-600">Klik untuk upload gambar</span>
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1">
-                            JPG, JPEG, PNG • Maksimal 2MB
-                        </p>
-
-                        <!-- Hidden Input -->
-                        <input
-                            id="image"
-                            name="image"
-                            type="file"
-                            accept="image/png,image/jpeg,image/jpg"
-                            class="hidden"
-                            onchange="previewImage(this)"
-                            required
-                        >
-                    </label>
-
-                    <!-- Preview -->
+                    <!-- Preview Image -->
                     <div id="imagePreview" class="mt-4 hidden">
-                        <p class="text-sm text-gray-600 mb-2">Preview Foto:</p>
-                        <img
-                            id="preview"
-                            class="w-full max-h-64 object-cover rounded-xl border shadow-sm"
-                            alt="Preview Image"
-                        >
+                        <img id="preview" src="" alt="Preview" class="max-w-full h-64 object-cover rounded-lg mx-auto">
                     </div>
 
                     @error('image')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
-
+            </div>
 
             <!-- Lokasi & Waktu -->
             <div class="mb-8">
@@ -141,10 +125,9 @@
                         value="{{ old('location_found') }}"
                         placeholder="Contoh: Gedung A Lantai 2, Kantin, Parkiran"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('location_found') border-red-500 @enderror"
-                        required
-                    >
+                        required>
                     @error('location_found')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -162,10 +145,9 @@
                             value="{{ old('date_found', date('Y-m-d')) }}"
                             max="{{ date('Y-m-d') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('date_found') border-red-500 @enderror"
-                            required
-                        >
+                            required>
                         @error('date_found')
-                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -180,10 +162,9 @@
                             id="time_found"
                             value="{{ old('time_found') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('time_found') border-red-500 @enderror"
-                            required
-                        >
+                            required>
                         @error('time_found')
-                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -205,10 +186,9 @@
                         value="{{ old('finder_name', auth()->user()->name ?? '') }}"
                         placeholder="Nama lengkap kamu"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('finder_name') border-red-500 @enderror"
-                        required
-                    >
+                        required>
                     @error('finder_name')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -224,8 +204,7 @@
                         value="{{ old('finder_contact') }}"
                         placeholder="Contoh: 08123456789 atau email@example.com"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('finder_contact') border-red-500 @enderror"
-                        required
-                    >
+                        required>
                     <p class="mt-1 text-xs text-gray-500">
                         <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -233,7 +212,7 @@
                         Kontak ini hanya akan dilihat oleh admin, tidak ditampilkan ke publik
                     </p>
                     @error('finder_contact')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -242,14 +221,12 @@
             <div class="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                     type="submit"
-                    class="flex-1 bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition font-medium"
-                >
+                    class="flex-1 bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition font-medium">
                     Kirim Laporan
                 </button>
                 <a
                     href="{{ route('dashboard.user') }}"
-                    class="flex-1 text-center bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-medium"
-                >
+                    class="flex-1 text-center bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-medium">
                     Batal
                 </a>
             </div>
@@ -279,36 +256,37 @@
 
 <!-- JavaScript untuk Preview Image -->
 <script>
-    function previewImage(input) {
-        const file = input.files[0];
+    function previewImage(event) {
         const preview = document.getElementById('preview');
-        const previewBox = document.getElementById('imagePreview');
+        const previewContainer = document.getElementById('imagePreview');
+        const file = event.target.files[0];
 
-        if (!file) return;
+        if (file) {
+            // Validasi file type
+            if (!file.type.match('image.*')) {
+                alert('File harus berupa gambar (JPG, PNG, atau JPEG)');
+                event.target.value = '';
+                return;
+            }
 
-        // Validasi ukuran file (2MB)
-        if (file.size > 2 * 1024 * 1024) {
-            alert('Ukuran gambar maksimal 2MB');
-            input.value = '';
-            previewBox.classList.add('hidden');
-            return;
+            // Validasi file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file maksimal 2MB');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+                previewContainer.style.display = 'block';
+            }
+            reader.onerror = function() {
+                alert('Gagal membaca file. Coba lagi.');
+            }
+            reader.readAsDataURL(file);
         }
-
-        // Validasi tipe file
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        if (!allowedTypes.includes(file.type)) {
-            alert('Format file harus JPG, JPEG, atau PNG');
-            input.value = '';
-            previewBox.classList.add('hidden');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            previewBox.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
     }
 </script>
 

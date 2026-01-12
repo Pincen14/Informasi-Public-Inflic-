@@ -38,16 +38,19 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
+            'name'     => $validated['username'],  // ← FIX: PAKAI USERNAME
             'username' => $validated['username'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'],
-            'role'     => $validated['role'],
+            'role'     => 'user',
             'password' => Hash::make($validated['password']),
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+
+
 
         /**
          * Redirect ke dashboard,

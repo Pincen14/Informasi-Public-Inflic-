@@ -47,14 +47,23 @@ class ItemController extends Controller
     | ADMIN DASHBOARD
     |--------------------------------------------------------------------------
     */
-    public function adminDashboard()
+    public function adminDashboard(Request $request)
     {
-        return view('admin.dashboard', [
-            'items' => Item::with('user')->latest()->paginate(20),
-            'pendingCount' => Item::where('status', 'pending')->count(),
-            'approvedCount' => Item::where('status', 'approved')->count(),
-            'takenCount' => Item::where('status', 'taken')->count(),
-        ]);
+        $pendingCount = Item::where('status', 'pending')->count();
+        $approvedCount = Item::where('status', 'approved')->count();
+        $takenCount = Item::where('status', 'taken')->count();
+
+        // Query dengan filter
+        $query = Item::with('user');
+
+        // Filter berdasarkan status (kalau ada)
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $items = $query->latest()->paginate(20);
+
+        return view('admin.dashboard', compact('items', 'pendingCount', 'approvedCount', 'takenCount'));
     }
 
     /*
