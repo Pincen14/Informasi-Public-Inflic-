@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,27 +24,82 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
     return view('welcome');
+})->name('welcome');
+
+/*
+|--------------------------------------------------------------------------
+| Auth Pages (Login & Register - SINGLE PAGE)
+|--------------------------------------------------------------------------
+| Hanya 1 halaman login dan 1 halaman register
+*/
+Route::middleware('guest')->group(function () {
+
+    // LOGIN
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+
+    // REGISTER
+    Route::get('/register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('/register', [RegisteredUserController::class, 'store']);
 });
 
-
-Route::get('/home', [HomeController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('home');
-
-
-
 /*
 |--------------------------------------------------------------------------
-| Dashboard (User & Admin - Harus Login)
+| Logout
 |--------------------------------------------------------------------------
 */
-Route::get('/dashboard', function () {
-    return view('homepage');
-})->middleware(['auth'])->name('dashboard');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| Profile Routes (Breeze Default)
+| Dashboard Redirect (BASED ON ROLE)
+|--------------------------------------------------------------------------
+| Satu pintu, redirect otomatis sesuai role
+*/
+Route::get('/dashboard', function () {
+
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        return redirect()->route('dashboard.admin');
+    }
+
+    return redirect()->route('dashboard.user');
+})->middleware('auth')->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Pages
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/user', function () {
+        return view('homepage-user');
+    })->name('dashboard.user');
+
+    Route::get('/dashboard/admin', function () {
+        return view('homepage-admin');
+    })->name('dashboard.admin');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Home (Optional / Legacy)
+|--------------------------------------------------------------------------
+*/
+Route::get('/home', [HomeController::class, 'index'])
+    ->middleware('auth')
+    ->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Profile Routes (Laravel Breeze Default)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -60,10 +117,6 @@ Route::middleware('auth')->group(function () {
 /*
 |--------------------------------------------------------------------------
 | Item (Barang Hilang & Ditemukan)
-|--------------------------------------------------------------------------
-| - User: input barang ditemukan
-| - User: melihat daftar barang
-| - Admin: approve barang
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -85,19 +138,9 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | Claim Barang (Admin)
 |--------------------------------------------------------------------------
-| - Verifikasi offline
-| - Upload dokumentasi barang telah diambil
-|--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
 
     Route::post('/items/{id}/claim', [ClaimController::class, 'store'])
         ->name('items.claim');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Auth Routes (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
-require __DIR__ . '/auth.php';
