@@ -6,57 +6,138 @@
 
     <title>Welcome</title>
 
-    <!-- Fonts (opsional, aman walau tanpa CSS) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet"/>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Figtree', sans-serif;
+            background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+                        url('{{ asset('images/weclome-page.png') }}') center/cover no-repeat;
+            min-height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .auth {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            z-index: 10;
+        }
+
+        .auth a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 16px;
+            font-weight: 500;
+            opacity: .85;
+            transition: opacity .3s;
+        }
+
+        .auth a:hover {
+            opacity: 1;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .content {
+            max-width: 640px;
+            text-align: center;
+            animation: fadeUp 1s ease forwards;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 16px;
+            opacity: .9;
+            margin-bottom: 36px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            background: #3b1fa6;
+            color: white;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,.3);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#f5f5f5;">
 
-    <!-- Top Right Menu -->
-    <div style="position:absolute; top:20px; right:20px;">
-        @auth
-            <a href="{{ route('dashboard') }}">Dashboard</a>
-        @else
-            <a href="{{ route('login') }}">Login</a>
-            |
-            <a href="{{ route('register') }}">Register</a>
-        @endauth
-    </div>
+<!-- AUTH MENU -->
+<div class="auth">
+    @auth
+        <a href="{{ route('dashboard') }}">Dashboard</a>
+    @else
+        <a href="{{ route('login') }}">Login</a>
+        <a href="{{ route('register') }}">Register</a>
+    @endauth
+</div>
 
-    <!-- Main Content -->
-    <div style="max-width:720px; text-align:center; padding:24px; background:#ffffff; border-radius:8px;">
-        <h1 style="font-size:32px; font-weight:bold;">
-            Sistem Informasi Lost & Found
+<!-- MAIN -->
+<div class="container">
+    <div class="content">
+        <h1>
+            Temukan Barang Kesayangan,<br>
+            Jangan Sampai Kehilangan
         </h1>
 
-        <p style="margin-top:16px; color:#555;">
-            Platform pelaporan dan verifikasi barang hilang dan ditemukan.
-            Pengguna dapat melaporkan barang, sedangkan admin bertugas melakukan
-            verifikasi dan klaim.
+        <p>
+            Platform Lost & Found modern untuk melaporkan dan menemukan kembali
+            barang berharga secara cepat dan aman.
         </p>
 
-        <div style="margin-top:32px; display:flex; justify-content:center; gap:16px;">
-            <a href="{{ route('login') }}"
-               style="padding:16px 24px; border:1px solid #ddd; border-radius:6px; text-decoration:none;">
-                <strong>Login</strong><br>
-                <small>Masuk ke akun</small>
-            </a>
-
-            <a href="{{ route('register') }}"
-               style="padding:16px 24px; border:1px solid #ddd; border-radius:6px; text-decoration:none;">
-                <strong>Register</strong><br>
-                <small>Buat akun baru</small>
-            </a>
-        </div>
-
-        <div style="margin-top:40px; font-size:12px; color:#999;">
-            Laravel v{{ Illuminate\Foundation\Application::VERSION }}
-            (PHP v{{ PHP_VERSION }})
+        <div class="buttons">
+            <a href="{{ route('register') }}" class="btn">Daftar</a>
+            <a href="{{ route('login') }}" class="btn">Masuk</a>
         </div>
     </div>
-
 </div>
+
 </body>
 </html>
