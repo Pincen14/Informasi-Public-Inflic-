@@ -1,49 +1,30 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemController; 
 use App\Http\Controllers\ClaimController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-| Semua route aplikasi web didefinisikan di sini
-|--------------------------------------------------------------------------
-*/
 
 /*
 |--------------------------------------------------------------------------
 | Public Route
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
 /*
 |--------------------------------------------------------------------------
-| Auth Pages (Login & Register - SINGLE PAGE)
+| Auth Pages
 |--------------------------------------------------------------------------
-| Hanya 1 halaman login dan 1 halaman register
 */
 Route::middleware('guest')->group(function () {
-
-    // LOGIN
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
-
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-
-    // REGISTER
-    Route::get('/register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store']);
 });
 
@@ -58,18 +39,14 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard Redirect (BASED ON ROLE)
+| Dashboard Redirect
 |--------------------------------------------------------------------------
-| Satu pintu, redirect otomatis sesuai role
 */
 Route::get('/dashboard', function () {
-
     $user = auth()->user();
-
     if ($user->role === 'admin') {
-        return redirect()->route('dashboard.admin');
+        return redirect()->route('admin.dashboard');
     }
-
     return redirect()->route('dashboard.user');
 })->middleware('auth')->name('dashboard');
 
@@ -79,68 +56,52 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/user', function () {
-        return view('homepage-user');
-    })->name('dashboard.user');
-
-    Route::get('/dashboard/admin', function () {
-        return view('homepage-admin');
-    })->name('dashboard.admin');
+    Route::get('/dashboard/user', [ItemController::class, 'userDashboard'])->name('dashboard.user');
+    Route::get('/dashboard/admin', [ItemController::class, 'adminDashboard'])->name('dashboard.admin');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Home (Optional / Legacy)
-|--------------------------------------------------------------------------
-*/
-Route::get('/home', [HomeController::class, 'index'])
-    ->middleware('auth')
-    ->name('home');
-
-/*
-|--------------------------------------------------------------------------
-| Profile Routes (Laravel Breeze Default)
+| Profile Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Item (Barang Hilang & Ditemukan)
+| Item Routes (User)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-
-    // Melihat semua barang (user & admin)
-    Route::get('/items', [ItemController::class, 'index'])
-        ->name('items.index');
-
-    // User input barang ditemukan
-    Route::post('/items', [ItemController::class, 'store'])
-        ->name('items.store');
-
-    // Admin approve barang
-    Route::post('/items/{id}/approve', [ItemController::class, 'approve'])
-        ->name('items.approve');
+    
+    // Form lapor barang ditemukan
+    Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+    
+    // Detail barang 
+    Route::get('/items/{id}', [ItemController::class, 'show'])->name('items.show');
+    
+    // Klaim barang
+    Route::get('/items/{id}/claim', [ItemController::class, 'claimForm'])->name('items.claim.form');
+    Route::post('/items/{id}/claim', [ClaimController::class, 'store'])->name('items.claim');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Claim Barang (Admin)
+| Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-
-    Route::post('/items/{id}/claim', [ClaimController::class, 'store'])
-        ->name('items.claim');
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/items/{id}', [ItemController::class, 'adminShow'])->name('items.show');
+    Route::get('/items/{id}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
+    Route::post('/items/{id}/approve', [ItemController::class, 'approve'])->name('items.approve');
+    Route::post('/items/{id}/reject', [ItemController::class, 'reject'])->name('items.reject');
+    Route::post('/items/{id}/taken', [ItemController::class, 'markAsTaken'])->name('items.taken');
+    Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
+    Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
 });

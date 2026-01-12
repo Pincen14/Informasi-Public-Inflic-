@@ -13,10 +13,13 @@ class Item extends Model
         'image',
         'location_found',
         'date_found',
+        'time_found',
+        'finder_name',
+        'finder_contact', // Private - hanya untuk admin
+        'admin_contact',  // Public - ditampilkan di dashboard
         'status',
         'user_id'
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
