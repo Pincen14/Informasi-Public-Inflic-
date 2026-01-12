@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Item;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | API - Get All Items (dari kode lama kamu)
+    | API - Get All Items
     |--------------------------------------------------------------------------
     */
     public function index()
@@ -20,15 +20,14 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | USER DASHBOARD - Tampil Barang Approved
+    | USER DASHBOARD - Barang Approved
     |--------------------------------------------------------------------------
     */
     public function userDashboard(Request $request)
     {
         $query = Item::where('status', 'approved');
 
-        // Fitur search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nama_item', 'LIKE', "%{$search}%")
@@ -45,23 +44,22 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN DASHBOARD - Kelola Semua Laporan
+    | ADMIN DASHBOARD
     |--------------------------------------------------------------------------
     */
     public function adminDashboard()
     {
-        $pendingCount = Item::where('status', 'pending')->count();
-        $approvedCount = Item::where('status', 'approved')->count();
-        $takenCount = Item::where('status', 'taken')->count();
-
-        $items = Item::with('user')->latest()->paginate(20);
-
-        return view('admin.dashboard', compact('items', 'pendingCount', 'approvedCount', 'takenCount'));
+        return view('admin.dashboard', [
+            'items' => Item::with('user')->latest()->paginate(20),
+            'pendingCount' => Item::where('status', 'pending')->count(),
+            'approvedCount' => Item::where('status', 'approved')->count(),
+            'takenCount' => Item::where('status', 'taken')->count(),
+        ]);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | FORM LAPOR BARANG DITEMUKAN
+    | FORM LAPOR BARANG
     |--------------------------------------------------------------------------
     */
     public function create()
@@ -71,80 +69,67 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | SUBMIT LAPORAN (dari kode lama kamu + tambahan kolom baru)
+    | STORE ITEM
     |--------------------------------------------------------------------------
     */
     public function store(Request $request)
     {
         $request->validate([
-            'nama_item' => 'required',
-            'description' => 'nullable|string',
-            'image' => 'required|image',
-            'location_found' => 'required',
-            'date_found' => 'required|date',
-            'time_found' => 'required',
-            'finder_name' => 'required|string|max:255',
-            'finder_contact' => 'required|string|max:255',
+            'nama_item'       => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'image'           => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'location_found'  => 'required|string|max:255',
+            'date_found'      => 'required|date',
+            'time_found'      => 'required',
+            'finder_name'     => 'required|string|max:255',
+            'finder_contact'  => 'required|string|max:255',
         ]);
 
-        // Upload gambar 
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('items'), $imageName);
+        $imagePath = $request->file('image')->store('items', 'public');
 
         Item::create([
-            'nama_item' => $request->nama_item,
-            'description' => $request->description,
-            'image' => $imageName,
+            'nama_item'      => $request->nama_item,
+            'description'    => $request->description,
+            'image'          => $imagePath,
             'location_found' => $request->location_found,
-            'date_found' => $request->date_found,
-            'time_found' => $request->time_found,
-            'finder_name' => $request->finder_name,
+            'date_found'     => $request->date_found,
+            'time_found'     => $request->time_found,
+            'finder_name'    => $request->finder_name,
             'finder_contact' => $request->finder_contact,
-            'admin_contact' => null,
-            'status' => 'pending',
-            'user_id' => auth()->id()
+            'status'         => 'pending',
+            'user_id'        => auth()->id(),
         ]);
 
-
-        // Request dari form web
-        return redirect()->route('dashboard.user')
-            ->with('success', 'Laporan berhasil dikirim! Menunggu verifikasi admin.');
-
-        // Request dari API
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'Item created']);
-        }
+        return redirect()
+            ->route('dashboard.user')
+            ->with('success', 'Laporan berhasil dikirim dan menunggu verifikasi admin.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | DETAIL BARANG (User View) - TIDAK tampil finder_contact
+    | DETAIL ITEM - USER
     |--------------------------------------------------------------------------
     */
     public function show($id)
     {
         $item = Item::where('status', 'approved')->findOrFail($id);
-
-        // User TIDAK bisa lihat finder_contact
         return view('items.show', compact('item'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | DETAIL BARANG (Admin View) - BISA lihat finder_contact
+    | DETAIL ITEM - ADMIN
     |--------------------------------------------------------------------------
     */
     public function adminShow($id)
     {
         $item = Item::with('user', 'claim')->findOrFail($id);
-
-        // Admin BISA lihat finder_contact
         return view('admin.show', compact('item'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | FORM KLAIM BARANG
+    | FORM CLAIM
     |--------------------------------------------------------------------------
     */
     public function claimForm($id)
@@ -155,123 +140,101 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - EDIT ITEM (Isi admin_contact)
+    | ADMIN EDIT
     |--------------------------------------------------------------------------
     */
     public function edit($id)
     {
-        $item = Item::findOrFail($id);
-        return view('admin.edit', compact('item'));
+        return view('admin.edit', [
+            'item' => Item::findOrFail($id)
+        ]);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - UPDATE ITEM
+    | ADMIN UPDATE
     |--------------------------------------------------------------------------
     */
     public function update(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
-
         $request->validate([
             'admin_contact' => 'nullable|string|max:255',
         ]);
 
-        $item->update([
+        Item::findOrFail($id)->update([
             'admin_contact' => $request->admin_contact,
         ]);
 
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Kontak admin berhasil diupdate!');
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'Kontak admin berhasil diupdate.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - APPROVE (dari kode lama kamu)
+    | ADMIN APPROVE
     |--------------------------------------------------------------------------
     */
     public function approve($id)
     {
         Item::findOrFail($id)->update(['status' => 'approved']);
 
-        // Kalau request dari API
-        if (request()->expectsJson()) {
-            return response()->json(['message' => 'Item approved']);
-        }
-
-        // Kalau request dari form web
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Laporan berhasil disetujui!');
+        return request()->expectsJson()
+            ? response()->json(['message' => 'Item approved'])
+            : redirect()->route('admin.dashboard')->with('success', 'Item disetujui.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - REJECT (Delete)
+    | ADMIN REJECT (DELETE + IMAGE)
     |--------------------------------------------------------------------------
     */
     public function reject($id)
     {
         $item = Item::findOrFail($id);
 
-        // Hapus gambar
-        if ($item->image && file_exists(public_path('items/' . $item->image))) {
-            unlink(public_path('items/' . $item->image));
+        if ($item->image && Storage::disk('public')->exists($item->image)) {
+            Storage::disk('public')->delete($item->image);
         }
 
         $item->delete();
 
-        // Kalau request dari API
-        if (request()->expectsJson()) {
-            return response()->json(['message' => 'Item rejected']);
-        }
-
-        // Kalau request dari form web
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Laporan ditolak dan dihapus.');
+        return request()->expectsJson()
+            ? response()->json(['message' => 'Item rejected'])
+            : redirect()->route('admin.dashboard')->with('success', 'Item ditolak dan dihapus.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - MARK AS TAKEN
+    | ADMIN MARK AS TAKEN
     |--------------------------------------------------------------------------
     */
     public function markAsTaken($id)
     {
         Item::findOrFail($id)->update(['status' => 'taken']);
 
-        // Kalau request dari API
-        if (request()->expectsJson()) {
-            return response()->json(['message' => 'Item marked as taken']);
-        }
-
-        // Kalau request dari form web
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Barang ditandai sudah diambil.');
+        return request()->expectsJson()
+            ? response()->json(['message' => 'Item marked as taken'])
+            : redirect()->route('admin.dashboard')->with('success', 'Barang ditandai sudah diambil.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN - DELETE
+    | ADMIN DELETE (FINAL)
     |--------------------------------------------------------------------------
     */
     public function destroy($id)
     {
         $item = Item::findOrFail($id);
 
-        // Hapus gambar
-        if ($item->image && file_exists(public_path('items/' . $item->image))) {
-            unlink(public_path('items/' . $item->image));
+        if ($item->image && Storage::disk('public')->exists($item->image)) {
+            Storage::disk('public')->delete($item->image);
         }
 
         $item->delete();
 
-        // Kalau request dari API
-        if (request()->expectsJson()) {
-            return response()->json(['message' => 'Item deleted']);
-        }
-
-        // Kalau request dari form web
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Item berhasil dihapus!');
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'Item berhasil dihapus.');
     }
 }

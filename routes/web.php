@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ItemController; 
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 | Public Route
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -77,14 +78,14 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    
+
     // Form lapor barang ditemukan
     Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
     Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-    
-    // Detail barang 
+
+    // Detail barang
     Route::get('/items/{id}', [ItemController::class, 'show'])->name('items.show');
-    
+
     // Klaim barang
     Route::get('/items/{id}/claim', [ItemController::class, 'claimForm'])->name('items.claim.form');
     Route::post('/items/{id}/claim', [ClaimController::class, 'store'])->name('items.claim');

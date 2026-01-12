@@ -47,42 +47,48 @@
     <!-- ITEM GRID -->
     <section class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        @forelse ($items ?? range(1,6) as $item)
+        @forelse ($items as $item)
             <div class="bg-white rounded-2xl p-4 shadow hover:shadow-lg transition">
 
+                <!-- IMAGE -->
                 <img
-                    src="https://simplesentimental.com/cdn/shop/products/IMG_2561_jpg_2000x.jpg?v=1680206421"
-                    class="rounded-xl mb-4 w-full h-48 object-cover"
-                    alt="Item Image"
+                    src="{{ asset('storage/' . $item->image) }}"
+                    alt="{{ $item->name }}"
+                    class="w-full h-48 object-cover rounded-xl mb-3"
                 >
 
+                <!-- TAG -->
                 <div class="flex gap-2 mb-2">
                     <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                        Hilang
+                        {{ $item->status ?? 'Hilang' }}
                     </span>
                     <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                        Kelas 2.04
+                        {{ $item->location ?? 'Tidak diketahui' }}
                     </span>
                 </div>
 
+                <!-- TITLE -->
                 <h4 class="font-semibold">
-                    {{ is_array($item) ? ($item['name'] ?? 'Nama Barang') : 'Nama Barang' }}
+                    {{ $item->name }}
                 </h4>
 
+                <!-- DESCRIPTION -->
                 <p class="text-sm text-gray-500 mt-1">
-                    Ditemukan tumbler seperti gambar di atas, dapat diambil di satpam lobby.
+                    {{ Str::limit($item->description, 80) }}
                 </p>
 
+                <!-- ACTION -->
                 <div class="mt-4">
-                    <button
-                        class="w-full bg-black text-white rounded-full py-2 text-sm hover:bg-gray-800 transition"
+                    <a
+                        href="{{ route('items.show', $item->id) }}"
+                        class="block text-center bg-black text-white rounded-full py-2 text-sm hover:bg-gray-800 transition"
                     >
                         Hubungi Admin
-                    </button>
+                    </a>
                 </div>
             </div>
         @empty
-            <p class="text-gray-500">
+            <p class="text-gray-500 col-span-3">
                 Belum ada barang yang tersedia.
             </p>
         @endforelse
@@ -90,51 +96,6 @@
     </section>
 
 </main>
-
-<!-- RECOMMENDATION -->
-<section class="max-w-7xl mx-auto px-6 py-12">
-    <h2 class="text-2xl font-semibold mb-6">
-        Cari Barang Lainnya
-    </h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        @for ($i = 0; $i < 3; $i++)
-            <div class="bg-white rounded-2xl p-4 shadow">
-
-                <img
-                    src="https://www.mahada.co.id/wp-content/uploads/2021/06/Tumbler-Custom-Berbahan-Plastik-Dengan-Model-Insert-Paper-Warna-Hitam-4.jpg"
-                    class="rounded-xl mb-4 w-full h-48 object-cover"
-                    alt="Recommendation Image"
-                >
-
-                <div class="flex gap-2 mb-2">
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                        Hilang
-                    </span>
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                        Perpustakaan
-                    </span>
-                </div>
-
-                <h4 class="font-semibold">
-                    Nama Barang
-                </h4>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Barang ditemukan dan dapat diambil melalui admin terkait.
-                </p>
-
-                <div class="mt-4">
-                    <button
-                        class="w-full bg-black text-white rounded-full py-2 text-sm hover:bg-gray-800 transition"
-                    >
-                        Hubungi Admin
-                    </button>
-                </div>
-            </div>
-        @endfor
-    </div>
-</section>
 
 <!-- CTA -->
 <section class="bg-gradient-to-r from-gray-900 to-gray-700 text-white py-16">
@@ -151,7 +112,7 @@
 
         <div class="md:text-right">
             <a
-                href="{{ route('items.index') }}"
+                href="{{ route('items.create') }}"
                 class="inline-block bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-200 transition"
             >
                 Upload Barang
