@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Claim;
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class ClaimController extends Controller
@@ -30,6 +32,8 @@ class ClaimController extends Controller
 
         Item::find($itemId)->update(['status' => 'taken']);
 
-        return response()->json(['message' => 'Claim success']);
+        return redirect()
+            ->route('dashboard.user')
+            ->with('success', 'Klaim berhasil dikirim! Admin akan menghubungi Anda segera.');
     }
 }

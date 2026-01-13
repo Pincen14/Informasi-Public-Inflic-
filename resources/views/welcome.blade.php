@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet" />
 
     <style>
         * {
@@ -18,12 +19,13 @@
         body {
             margin: 0;
             font-family: 'Figtree', sans-serif;
-            background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-                        url('{{ asset('images/weclome-page.png') }}') center/cover no-repeat;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%),
+            url('{{ asset("images/welcome-page.png") }}') center/cover no-repeat;
             min-height: 100vh;
             color: #fff;
             overflow: hidden;
         }
+
 
         .auth {
             position: absolute;
@@ -91,7 +93,7 @@
 
         .btn:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
         }
 
         @keyframes fadeUp {
@@ -99,6 +101,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -109,35 +112,36 @@
 
 <body>
 
-<!-- AUTH MENU -->
-<div class="auth">
-    @auth
+    <!-- AUTH MENU -->
+    <div class="auth">
+        @auth
         <a href="{{ route('dashboard') }}">Dashboard</a>
-    @else
+        @else
         <a href="{{ route('login') }}">Login</a>
         <a href="{{ route('register') }}">Register</a>
-    @endauth
-</div>
+        @endauth
+    </div>
 
-<!-- MAIN -->
-<div class="container">
-    <div class="content">
-        <h1>
-            Temukan Barang Kesayangan,<br>
-            Jangan Sampai Kehilangan
-        </h1>
+    <!-- MAIN -->
+    <div class="container">
+        <div class="content">
+            <h1>
+                Temukan Barang Kesayangan,<br>
+                Jangan Sampai Kehilangan
+            </h1>
 
-        <p>
-            Platform Lost & Found modern untuk melaporkan dan menemukan kembali
-            barang berharga secara cepat dan aman.
-        </p>
+            <p>
+                Platform pencarian modern untuk melaporkan dan menemukan kembali
+                barang berharga secara cepat dan aman.
+            </p>
 
-        <div class="buttons">
-            <a href="{{ route('register') }}" class="btn">Daftar</a>
-            <a href="{{ route('login') }}" class="btn">Masuk</a>
+            <div class="buttons">
+                <a href="{{ route('register') }}" class="btn">Daftar</a>
+                <a href="{{ route('login') }}" class="btn">Masuk</a>
+            </div>
         </div>
     </div>
-</div>
 
 </body>
+
 </html>

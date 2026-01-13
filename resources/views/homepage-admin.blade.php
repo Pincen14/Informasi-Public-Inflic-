@@ -64,68 +64,67 @@
                         <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @forelse ($items ?? [] as $item)
-                        <tr class="border-t">
-                            <td class="px-4 py-3">
-                                {{ $item->name ?? 'Tumbler' }}
-                            </td>
+                    <tr class="border-t">
+                        <td class="px-4 py-3">
+                            {{ $item->name ?? 'Tumbler' }}
+                        </td>
 
-                            <td class="px-4 py-3">
-                                {{ $item->location ?? 'Lobby / Kelas' }}
-                            </td>
+                        <td class="px-4 py-3">
+                            {{ $item->location ?? 'Lobby / Kelas' }}
+                        </td>
 
-                            <td class="px-4 py-3">
-                                @if (($item->status ?? 'pending') === 'approved')
-                                    <span class="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
-                                        Approved
-                                    </span>
-                                @elseif (($item->status ?? 'pending') === 'claimed')
-                                    <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">
-                                        Claimed
-                                    </span>
-                                @else
-                                    <span class="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-700">
-                                        Pending
-                                    </span>
-                                @endif
-                            </td>
+                        <td class="px-4 py-3">
+                            @if (($item->status ?? 'pending') === 'approved')
+                            <span class="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
+                                Approved
+                            </span>
+                            @elseif (($item->status ?? 'pending') === 'claimed')
+                            <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">
+                                Claimed
+                            </span>
+                            @else
+                            <span class="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-700">
+                                Pending
+                            </span>
+                            @endif
+                        </td>
 
-                            <td class="px-4 py-3">
-                                {{ optional($item->created_at)->format('d M Y') ?? now()->format('d M Y') }}
-                            </td>
+                        <td class="px-4 py-3">
+                            {{ optional($item->created_at)->format('d M Y') ?? now()->format('d M Y') }}
+                        </td>
 
-                            <td class="px-4 py-3 text-center">
-                                <div class="flex justify-center gap-2">
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex justify-center gap-2">
 
-                                    <!-- Approve -->
-                                    <form method="POST" action="{{ route('items.approve', $item->id ?? 0) }}">
-                                        @csrf
-                                        <button
-                                            class="px-3 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
-                                            Approve
-                                        </button>
-                                    </form>
+                                <!-- Approve -->
+                                <form method="POST" action="{{ route('items.approve', $item->id ?? 0) }}">
+                                    @csrf
+                                    <button
+                                        class="px-3 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
+                                        Approve
+                                    </button>
+                                </form>
 
-                                    <!-- Claim -->
-                                    <form method="POST" action="{{ route('items.claim', $item->id ?? 0) }}">
-                                        @csrf
-                                        <button
-                                            class="px-3 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700">
-                                            Claim
-                                        </button>
-                                    </form>
+                                <!-- Claim -->
+                                <form method="POST" action="{{ route('items.claim', $item->id ?? 0) }}">
+                                    @csrf
+                                    <button
+                                        class="px-3 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700">
+                                        Claim
+                                    </button>
+                                </form>
 
-                                </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-gray-500">
-                                Belum ada data barang
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">
+                            Belum ada data barang
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
