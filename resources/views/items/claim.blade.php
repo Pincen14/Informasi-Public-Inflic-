@@ -118,20 +118,20 @@
                 <!-- Nomor KTP -->
                 <div class="mb-4">
                     <label for="nomor_ktp" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nomor KTP <span class="text-red-500">*</span>
+                        Nomor NIM atau KTP <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
-                        name="nomor_ktp"
-                        id="nomor_ktp"
-                        value="{{ old('nomor_ktp') }}"
+                        name="NIMorKTP"
+                        id="NIMorKTP"
+                        value="{{ old('NIMorKTP') }}"
                         placeholder="Contoh: 3201234567890001"
                         maxlength="16"
                         pattern="[0-9]{16}"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('nomor_ktp') border-red-500 @enderror"
                         required>
-                    <p class="mt-1 text-xs text-gray-500">Masukkan 16 digit nomor KTP</p>
-                    @error('nomor_ktp')
+                    <p class="mt-1 text-xs text-gray-500">Masukkan nomor KTP atau NIM</p>
+                    @error('NIMorKTP')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>

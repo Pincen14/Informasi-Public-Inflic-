@@ -246,4 +246,44 @@ class ItemController extends Controller
             ->route('admin.dashboard')
             ->with('success', 'Item berhasil dihapus.');
     }
+
+    /*
+|--------------------------------------------------------------------------
+| PROCESS CLAIM
+|--------------------------------------------------------------------------
+*/
+
+    public function claim(Request $request, $id)
+    {
+        $item = Item::where('status', 'approved')->findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'nama_pengambil' => 'required|string|max:255',
+            'nomor_ktp' => 'required|digits:16',
+            'phone_pengambil' => 'required|string|max:20',
+            'foto_pengambil' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'tgl_ambil' => 'required|date|after_or_equal:today',
+            'agreement' => 'required|accepted',
+        ]);
+
+        // Upload foto pengambil
+        $fotoPath = $request->file('foto_pengambil')->store('claims', 'public');
+
+        // Simpan data claim ke tabel claims
+        $item->claim()->create([
+            'user_id' => auth()->id(),
+            'nama_pengambil' => $validated['nama_pengambil'],
+            'nomor_ktp' => $validated['nomor_ktp'],
+            'phone_pengambil' => $validated['phone_pengambil'],
+            'foto_pengambil' => $fotoPath,
+            'tgl_ambil' => $validated['tgl_ambil'],
+            'status' => 'pending', // pending review by admin
+        ]);
+
+
+        return redirect()
+            ->route('dashboard.user')
+            ->with('success', 'Klaim berhasil dikirim! Admin akan menghubungi Anda segera.');
+    }
 }
