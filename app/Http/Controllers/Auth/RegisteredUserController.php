@@ -30,6 +30,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'name'     => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'phone'    => ['required', 'string', 'max:20'],
@@ -38,7 +39,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'name'     => $validated['username'],  // ← FIX: PAKAI USERNAME
+            'name'     => $validated['name'],  
             'username' => $validated['username'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'],

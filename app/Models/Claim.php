@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Claim extends Model
 {
+
+    use HasFactory;
+
+
     protected $fillable = [
         'item_id',
         'nama_pengambil',
