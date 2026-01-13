@@ -87,14 +87,8 @@
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition">
             <!-- Image -->
             <div class="h-48 bg-gray-100 overflow-hidden relative">
-                @if($item->image && file_exists(public_path('items/' . $item->image)))
-                @php
-                $imagePath = public_path('items/' . $item->image);
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $imageMime = mime_content_type($imagePath);
-                $imageSrc = 'data:' . $imageMime . ';base64,' . $imageData;
-                @endphp
-                <img src="{{ $imageSrc }}" alt="{{ $item->nama_item }}" class="w-full h-full object-cover">
+                @if($item->image && \Storage::disk('public')->exists($item->image))
+                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->nama_item }}" class="w-full h-full object-cover">
                 @else
                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                     <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -47,14 +47,8 @@
             <h2 class="text-lg font-bold text-gray-900 mb-4">Barang yang Diklaim</h2>
             <div class="flex items-start">
                 <div class="h-20 w-20 flex-shrink-0 mr-4">
-                    @if($item->image && file_exists(public_path('items/' . $item->image)))
-                    @php
-                    $imagePath = public_path('items/' . $item->image);
-                    $imageData = base64_encode(file_get_contents($imagePath));
-                    $imageMime = mime_content_type($imagePath);
-                    $imageSrc = 'data:' . $imageMime . ';base64,' . $imageData;
-                    @endphp
-                    <img src="{{ $imageSrc }}" alt="{{ $item->nama_item }}" class="h-20 w-20 rounded object-cover">
+                    @if($item->image && \Storage::disk('public')->exists($item->image))
+                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->nama_item }}" class="h-20 w-20 rounded object-cover">
                     @else
                     <div class="h-20 w-20 rounded bg-gray-200 flex items-center justify-center">
                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

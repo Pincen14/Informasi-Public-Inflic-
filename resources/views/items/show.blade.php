@@ -20,38 +20,32 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-    
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Kolom Kiri: Foto & Info Barang -->
         <div class="lg:col-span-2 space-y-6">
-            
+
             <!-- Foto Barang -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                @if($item->image && file_exists(public_path('items/' . $item->image)))
-                    @php
-                        $imagePath = public_path('items/' . $item->image);
-                        $imageData = base64_encode(file_get_contents($imagePath));
-                        $imageMime = mime_content_type($imagePath);
-                        $imageSrc = 'data:' . $imageMime . ';base64,' . $imageData;
-                    @endphp
-                    <img src="{{ $imageSrc }}" alt="{{ $item->nama_item }}" class="w-full h-96 object-cover">
+                @if($item->image && \Storage::disk('public')->exists($item->image))
+                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->nama_item }}" class="w-full h-96 object-cover">
                 @else
-                    <div class="w-full h-96 bg-gray-200 flex items-center justify-center">
-                        <div class="text-center">
-                            <svg class="w-24 h-24 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <p class="text-gray-500">Tidak ada foto</p>
-                        </div>
+                <div class="w-full h-96 bg-gray-200 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-24 h-24 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <p class="text-gray-500">Tidak ada foto</p>
                     </div>
+                </div>
                 @endif
             </div>
 
             <!-- Informasi Barang -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b">Informasi Barang</h2>
-                
+
                 <div class="space-y-4">
                     <!-- Nama Barang -->
                     <div>
@@ -116,54 +110,54 @@
 
         <!-- Kolom Kanan: Kontak & Aksi -->
         <div class="space-y-6">
-            
+
             <!-- Kontak Card -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b">Hubungi Kami</h2>
-                
-                @if($item->admin_contact)
-                    <div class="mb-4">
-                        <label class="text-sm font-medium text-gray-500 mb-2 block">Untuk Mengklaim Barang Ini:</label>
-                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                            <p class="text-lg font-bold text-purple-900 break-all">
-                                {{ $item->admin_contact }}
-                            </p>
-                            <p class="text-xs text-purple-600 mt-2">
-                                📞 WhatsApp / Email
-                            </p>
-                        </div>
-                    </div>
 
-                    <div class="space-y-2">
-                        <!-- WhatsApp Button (jika nomornya) -->
-                        @if(preg_match('/^[\d\s\+\-\(\)]+$/', $item->admin_contact))
+                @if($item->admin_contact)
+                <div class="mb-4">
+                    <label class="text-sm font-medium text-gray-500 mb-2 block">Untuk Mengklaim Barang Ini:</label>
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <p class="text-lg font-bold text-purple-900 break-all">
+                            {{ $item->admin_contact }}
+                        </p>
+                        <p class="text-xs text-purple-600 mt-2">
+                            📞 WhatsApp / Email
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <!-- WhatsApp Button (jika nomornya) -->
+                    <!-- @if(preg_match('/^[\d\s\+\-\(\)]+$/', $item->admin_contact))
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->admin_contact) }}" 
                                target="_blank"
                                class="block w-full bg-green-600 text-white text-center py-3 rounded-lg hover:bg-green-700 transition font-medium">
                                 💬 Chat via WhatsApp
                             </a>
-                        @endif
+                        @endif  -->
 
-                        <!-- Email Button (jika emailnya) -->
-                        @if(filter_var($item->admin_contact, FILTER_VALIDATE_EMAIL))
-                            <a href="mailto:{{ $item->admin_contact }}" 
-                               class="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700 transition font-medium">
-                                ✉️ Kirim Email
-                            </a>
-                        @endif
+                    <!-- Email Button (jika emailnya) -->
+                    @if(filter_var($item->admin_contact, FILTER_VALIDATE_EMAIL))
+                    <a href="mailto:{{ $item->admin_contact }}"
+                        class="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+                        ✉️ Kirim Email
+                    </a>
+                    @endif
 
-                        <!-- Button Klaim -->
-                        <a href="{{ route('items.claim.form', $item->id) }}" 
-                           class="block w-full bg-purple-700 text-white text-center py-3 rounded-lg hover:bg-purple-800 transition font-medium">
-                            📋 Ajukan Klaim Barang
-                        </a>
-                    </div>
+                    <!-- Button Klaim -->
+                    <a href="{{ route('items.claim.form', $item->id) }}"
+                        class="block w-full bg-purple-700 text-white text-center py-3 rounded-lg hover:bg-purple-800 transition font-medium">
+                        📋 Ajukan Klaim Barang
+                    </a>
+                </div>
                 @else
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <p class="text-sm text-yellow-800">
-                            ⚠️ Kontak belum tersedia. Admin sedang memproses laporan ini.
-                        </p>
-                    </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p class="text-sm text-yellow-800">
+                        ⚠️ Kontak belum tersedia. Admin sedang memproses laporan ini.
+                    </p>
+                </div>
                 @endif
             </div>
 
