@@ -129,7 +129,13 @@ class ItemController extends Controller
     */
     public function show($id)
     {
-        $item = Item::where('status', 'approved')->findOrFail($id);
+        $item = Item::whereIn('status', ['approved', 'taken'])->findOrFail($id);
+
+        if ($item->status === 'taken') {
+            $item->load('claim');
+            return view('items.confirmed', compact('item'));
+        }
+
         return view('items.show', compact('item'));
     }
 
