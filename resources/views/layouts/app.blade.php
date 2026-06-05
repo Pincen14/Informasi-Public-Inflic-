@@ -40,9 +40,6 @@
                         <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-purple-700 px-3 py-2 rounded-md text-sm font-medium">
                             Dashboard Admin
                         </a>
-                        <a href="{{ route('admin.claims.index') }}" class="text-gray-700 hover:text-purple-700 px-3 py-2 rounded-md text-sm font-medium">
-                            Klaim Masuk
-                        </a>
                         @else
                         <!-- User Menu -->
                         <a href="{{ route('dashboard.user') }}" class="text-gray-700 hover:text-purple-700 px-3 py-2 rounded-md text-sm font-medium">
@@ -64,7 +61,7 @@
 
                             <!-- Dropdown Menu -->
                             <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                                <a href="{{ auth()->user()->role === 'admin' ? route('admin.profile.edit') : route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -93,12 +90,11 @@
                                 @auth
                                 @if(auth()->user()->role === 'admin')
                                 <a href="{{ route('admin.dashboard') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Dashboard Admin</a>
-                                <a href="{{ route('admin.claims.index') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Klaim Masuk</a>
                                 @else
                                 <a href="{{ route('dashboard.user') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
                                 <a href="{{ route('items.create') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Lapor Barang</a>
                                 @endif
-                                <a href="{{ route('profile.edit') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Profile</a>
+                                <a href="{{ auth()->user()->role === 'admin' ? route('admin.profile.edit') : route('profile.edit') }}" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Profile</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Logout</button>
@@ -114,26 +110,68 @@
             </div>
         </nav>
 
-        <!-- Flash Messages -->
-        @if(session('success'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
+        <!-- Toast Notifications -->
+        <div x-data="{ 
+                show: true, 
+                message: '{{ session('success') ?? session('error') ?? '' }}', 
+                type: '{{ session('success') ? 'success' : (session('error') ? 'error' : '') }}'
+             }" 
+             x-init="if(message) { setTimeout(() => show = false, 4000) }"
+             x-show="show && message"
+             x-transition:enter="transform ease-out duration-300 transition"
+             x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+             x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed top-5 right-5 z-[9999] max-w-sm w-full bg-white shadow-xl rounded-xl border border-gray-100 pointer-events-auto overflow-hidden"
+             style="display: none;">
+            <div class="p-4">
+                <div class="flex items-start">
+                    <!-- Icon -->
+                    <div class="flex-shrink-0">
+                        <template x-if="type === 'success'">
+                            <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </template>
+                        <template x-if="type === 'error'">
+                            <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </template>
+                    </div>
+                    <!-- Message -->
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p class="text-sm font-semibold text-gray-900" x-text="type === 'success' ? 'Sukses' : 'Gagal'"></p>
+                        <p class="mt-1 text-sm text-gray-500" x-text="message"></p>
+                    </div>
+                    <!-- Close Button -->
+                    <div class="ml-4 flex-shrink-0 flex flex-items-start">
+                        <button @click="show = false" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
+            <!-- Progress Bar -->
+            <div class="h-1 bg-gradient-to-r" :class="type === 'success' ? 'from-green-400 to-green-600' : 'from-red-400 to-red-600'" style="animation: toastProgress 4s linear forwards;"></div>
         </div>
-        @endif
 
-        @if(session('error'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        </div>
-        @endif
+        <style>
+            @keyframes toastProgress {
+                from { width: 100%; }
+                to { width: 0%; }
+            }
+        </style>
 
         <!-- Page Content -->
         <main>
             @yield('content')
+            {{ $slot ?? '' }}
         </main>
 
         <!-- Footer -->

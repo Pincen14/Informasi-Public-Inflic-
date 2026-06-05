@@ -105,14 +105,8 @@
                             <div class="flex items-center">
 
                                 <div class="h-12 w-12 flex-shrink-0">
-                                    @if($item->image && file_exists(public_path('items/' . $item->image)))
-                                    @php
-                                    $imagePath = public_path('items/' . $item->image);
-                                    $imageData = base64_encode(file_get_contents($imagePath));
-                                    $imageMime = mime_content_type($imagePath);
-                                    $imageSrc = 'data:' . $imageMime . ';base64,' . $imageData;
-                                    @endphp
-                                    <img class="h-12 w-12 rounded object-cover" src="{{ $imageSrc }}" alt="{{ $item->nama_item }}">
+                                    @if($item->image && \Storage::disk('public')->exists($item->image))
+                                    <img class="h-12 w-12 rounded object-cover" src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->nama_item }}">
                                     @else
                                     <div class="h-12 w-12 rounded bg-gray-200 flex items-center justify-center">
                                         <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,9 +159,11 @@
 
                         <!-- Aksi -->
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-3">
                                 <!-- Detail -->
-                                <a href="{{ route('admin.items.show', $item->id) }}" class="text-blue-600 hover:text-blue-900" title="Detail">
+                                <a href="{{ route('admin.items.show', $item->id) }}" 
+                                   class="p-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition duration-150 flex items-center justify-center" 
+                                   title="Detail">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -176,9 +172,12 @@
 
                                 @if($item->status == 'pending')
                                 <!-- Approve -->
-                                <form action="{{ route('admin.items.approve', $item->id) }}" method="POST" class="inline">
+                                <form action="{{ route('admin.items.approve', $item->id) }}" method="POST" class="m-0 flex items-center">
                                     @csrf
-                                    <button type="submit" class="text-green-600 hover:text-green-900" title="Approve" onclick="return confirm('Setujui laporan ini?')">
+                                    <button type="submit" 
+                                            class="p-2 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition duration-150 flex items-center justify-center" 
+                                            title="Approve" 
+                                            onclick="return confirm('Setujui laporan ini?')">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -188,9 +187,12 @@
 
                                 @if($item->status == 'approved')
                                 <!-- Mark as Taken -->
-                                <form action="{{ route('admin.items.taken', $item->id) }}" method="POST" class="inline">
+                                <form action="{{ route('admin.items.taken', $item->id) }}" method="POST" class="m-0 flex items-center">
                                     @csrf
-                                    <button type="submit" class="text-gray-600 hover:text-gray-900" title="Tandai Sudah Diambil" onclick="return confirm('Tandai barang sudah diambil?')">
+                                    <button type="submit" 
+                                            class="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 transition duration-150 flex items-center justify-center" 
+                                            title="Tandai Sudah Diambil" 
+                                            onclick="return confirm('Tandai barang sudah diambil?')">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
@@ -199,9 +201,12 @@
                                 @endif
 
                                 <!-- Reject/Delete -->
-                                <form action="{{ route('admin.items.reject', $item->id) }}" method="POST" class="inline">
+                                <form action="{{ route('admin.items.reject', $item->id) }}" method="POST" class="m-0 flex items-center">
                                     @csrf
-                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Tolak/Hapus" onclick="return confirm('Hapus laporan ini? Tidak bisa dikembalikan!')">
+                                    <button type="submit" 
+                                            class="p-2 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition duration-150 flex items-center justify-center" 
+                                            title="Tandai Sudah Diambil" 
+                                            onclick="return confirm('Tandai barang ini sebagai sudah diambil?')">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>

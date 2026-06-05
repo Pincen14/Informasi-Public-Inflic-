@@ -136,15 +136,7 @@
 
                     <input type="hidden" id="password_confirmation" name="password_confirmation">
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Role</label>
-                        <select name="role" required
-                            class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="">Pilih Role</option>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+
 
                     <button type="submit"
                         class="w-full py-2.5 rounded-md text-white font-medium primary-color primary-hover">

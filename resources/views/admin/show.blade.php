@@ -28,14 +28,8 @@
 
             <!-- Foto Barang -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                @if($item->image && file_exists(public_path('items/' . $item->image)))
-                @php
-                $imagePath = public_path('items/' . $item->image);
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $imageMime = mime_content_type($imagePath);
-                $imageSrc = 'data:' . $imageMime . ';base64,' . $imageData;
-                @endphp
-                <img src="{{ $imageSrc }}" alt="{{ $item->nama_item }}" class="w-full h-96 object-cover">
+                @if($item->image && \Storage::disk('public')->exists($item->image))
+                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->nama_item }}" class="w-full h-96 object-cover">
                 @else
                 <div class="w-full h-96 bg-gray-200 flex items-center justify-center">
                     <div class="text-center">
@@ -213,8 +207,8 @@
                     <!-- Reject/Delete -->
                     <form action="{{ route('admin.items.reject', $item->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium" onclick="return confirm('Hapus laporan ini? Tidak bisa dikembalikan!')">
-                            🗑 Hapus Laporan
+                        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium" onclick="return confirm('Tandai barang ini sebagai sudah diambil?')">
+                            🗑 Tandai Sudah Diambil
                         </button>
                     </form>
                 </div>

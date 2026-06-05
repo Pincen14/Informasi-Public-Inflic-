@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,26 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-/*
-|--------------------------------------------------------------------------
-| Auth Pages
-|--------------------------------------------------------------------------
-*/
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store']);
-});
 
-/*
-|--------------------------------------------------------------------------
-| Logout
-|--------------------------------------------------------------------------
-*/
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -56,34 +35,25 @@ Route::get('/dashboard', function () {
 | Dashboard Pages
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/user', [ItemController::class, 'userDashboard'])->name('dashboard.user');
-    Route::get('/dashboard/admin', [ItemController::class, 'adminDashboard'])->name('admin.dashboard');
-});
-
 /*
 |--------------------------------------------------------------------------
-| Profile Routes
+| User Routes (Dashboard, Profile, and Item Reporting)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role.user'])->group(function () {
+    // Dashboard User
+    Route::get('/dashboard/user', [ItemController::class, 'userDashboard'])->name('dashboard.user');
+
+    // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Item Routes (User)
-|--------------------------------------------------------------------------
-*/
-Route::middleware('auth')->group(function () {
 
     // Form lapor barang ditemukan
     Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
     Route::post('/items', [ItemController::class, 'store'])->name('items.store');
 
-    // Detail barang
+    // Detail barang (User)
     Route::get('/items/{id}', [ItemController::class, 'show'])->name('items.show');
 
     // Klaim barang
@@ -93,10 +63,20 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes
+| Admin Routes (Dashboard, Profile, and Item Management)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role.admin'])->group(function () {
+    // Dashboard Admin
+    Route::get('/dashboard/admin', [ItemController::class, 'adminDashboard'])->name('admin.dashboard');
+
+    // Profile Admin
+    Route::get('/admin/profile', [ProfileController::class, 'adminEdit'])->name('admin.profile.edit');
+    Route::patch('/admin/profile', [ProfileController::class, 'adminUpdate'])->name('admin.profile.update');
+    Route::delete('/admin/profile', [ProfileController::class, 'adminDestroy'])->name('admin.profile.destroy');
+});
+
+Route::middleware(['auth', 'role.admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/items/{id}', [ItemController::class, 'adminShow'])->name('items.show');
     Route::get('/items/{id}/edit', [ItemController::class, 'edit'])->name('items.edit');
     Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
@@ -106,3 +86,5 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
     Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
 });
+
+require __DIR__.'/auth.php';

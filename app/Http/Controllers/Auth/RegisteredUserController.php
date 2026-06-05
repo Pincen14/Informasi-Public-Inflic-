@@ -32,18 +32,30 @@ class RegisteredUserController extends Controller
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email'    => [
+                'required', 
+                'string', 
+                'email', 
+                'max:255', 
+                'unique:users,email',
+                function ($attribute, $value, $fail) {
+                    if (!str_ends_with($value, '@student.com') && !str_ends_with($value, '@admin.com')) {
+                        $fail('masukkan email yang sesuai');
+                    }
+                }
+            ],
             'phone'    => ['required', 'string', 'max:20'],
-            'role'     => ['required', 'in:user,admin'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $role = str_ends_with($validated['email'], '@admin.com') ? 'admin' : 'user';
 
         $user = User::create([
             'name'     => $validated['name'],  
             'username' => $validated['username'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'],
-            'role'     => 'user',
+            'role'     => $role,
             'password' => Hash::make($validated['password']),
         ]);
 

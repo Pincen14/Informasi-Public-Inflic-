@@ -25,7 +25,15 @@ class ItemController extends Controller
     */
     public function userDashboard(Request $request)
     {
-        $query = Item::where('status', 'approved');
+        $query = Item::whereIn('status', ['approved', 'taken']);
+
+        if ($request->filled('status')) {
+            if ($request->status === 'belum_ditemukan') {
+                $query->where('status', 'approved');
+            } elseif ($request->status === 'sudah_ditemukan') {
+                $query->where('status', 'taken');
+            }
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -195,22 +203,17 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN REJECT (DELETE + IMAGE)
+    | ADMIN REJECT (UPDATE TO TAKEN)
     |--------------------------------------------------------------------------
     */
     public function reject($id)
     {
         $item = Item::findOrFail($id);
-
-        if ($item->image && Storage::disk('public')->exists($item->image)) {
-            Storage::disk('public')->delete($item->image);
-        }
-
-        $item->delete();
+        $item->update(['status' => 'taken']);
 
         return request()->expectsJson()
-            ? response()->json(['message' => 'Item rejected'])
-            : redirect()->route('admin.dashboard')->with('success', 'Item ditolak dan dihapus.');
+            ? response()->json(['message' => 'Item status updated to taken'])
+            : redirect()->route('admin.dashboard')->with('success', 'Laporan berhasil ditandai sudah diambil.');
     }
 
     /*
@@ -229,22 +232,17 @@ class ItemController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN DELETE (FINAL)
+    | ADMIN DELETE (UPDATE TO TAKEN)
     |--------------------------------------------------------------------------
     */
     public function destroy($id)
     {
         $item = Item::findOrFail($id);
-
-        if ($item->image && Storage::disk('public')->exists($item->image)) {
-            Storage::disk('public')->delete($item->image);
-        }
-
-        $item->delete();
+        $item->update(['status' => 'taken']);
 
         return redirect()
             ->route('admin.dashboard')
-            ->with('success', 'Item berhasil dihapus.');
+            ->with('success', 'Laporan berhasil ditandai sudah diambil.');
     }
 
     /*

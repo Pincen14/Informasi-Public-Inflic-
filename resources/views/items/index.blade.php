@@ -14,28 +14,7 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Flash Messages -->
-    @if(session('success'))
-    <div class="mb-6 bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative" role="alert">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="font-medium">{{ session('success') }}</span>
-        </div>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="mb-6 bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="font-medium">{{ session('error') }}</span>
-        </div>
-    </div>
-    @endif
 
     <!-- Title -->
     <!-- <div class="mb-6">
@@ -46,20 +25,26 @@
     <div class="mb-6 flex flex-col md:flex-row gap-4 items-center">
         <!-- Filter Buttons -->
         <div class="flex gap-2">
-            <button class="px-6 py-2 rounded-full text-white bg-purple-700 hover:bg-purple-800 transition font-medium">
+            <a href="{{ route('dashboard.user', ['status' => '', 'search' => request('search')]) }}" 
+               class="px-6 py-2 rounded-full font-medium transition text-center {{ request('status') === null || request('status') === '' ? 'text-white bg-purple-700 hover:bg-purple-800' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50' }}">
                 Semua
-            </button>
-            <button class="px-6 py-2 rounded-full text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition font-medium">
+            </a>
+            <a href="{{ route('dashboard.user', ['status' => 'belum_ditemukan', 'search' => request('search')]) }}" 
+               class="px-6 py-2 rounded-full font-medium transition text-center {{ request('status') === 'belum_ditemukan' ? 'text-white bg-purple-700 hover:bg-purple-800' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50' }}">
                 Belum Ditemukan
-            </button>
-            <button class="px-6 py-2 rounded-full text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition font-medium">
+            </a>
+            <a href="{{ route('dashboard.user', ['status' => 'sudah_ditemukan', 'search' => request('search')]) }}" 
+               class="px-6 py-2 rounded-full font-medium transition text-center {{ request('status') === 'sudah_ditemukan' ? 'text-white bg-purple-700 hover:bg-purple-800' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50' }}">
                 Sudah Ditemukan
-            </button>
+            </a>
         </div>
 
         <!-- Search Bar -->
         <div class="flex-1 w-full md:w-auto">
             <form action="{{ route('dashboard.user') }}" method="GET" class="flex gap-2">
+                @if(request('status'))
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                @endif
                 <div class="flex-1 relative">
                     <input
                         type="text"
@@ -96,6 +81,11 @@
                     </svg>
                 </div>
                 @endif
+
+                <!-- Status Badge -->
+                <span class="absolute top-2 right-2 px-2.5 py-1 text-xs font-semibold rounded-full shadow {{ $item->status === 'taken' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-yellow-100 text-yellow-800 border border-yellow-200' }}">
+                    {{ $item->status === 'taken' ? 'Sudah Ditemukan' : 'Belum Ditemukan' }}
+                </span>
             </div>
 
             <!-- Content -->

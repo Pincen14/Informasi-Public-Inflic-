@@ -2,9 +2,9 @@
     <!-- Header banner -->
     <div class="bg-gradient-to-r from-purple-700 to-indigo-800 text-white py-12 px-6 sm:px-8 lg:px-12 shadow-inner">
         <div class="max-w-7xl mx-auto">
-            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Profil Pengguna</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Profil Admin</h1>
             <p class="text-purple-100 mt-2 text-sm sm:text-base">
-                Kelola informasi akun, kata sandi, dan foto profil Anda.
+                Kelola informasi akun admin, kata sandi, dan foto profil Anda.
             </p>
         </div>
     </div>
@@ -61,7 +61,7 @@
             <div class="lg:col-span-2 space-y-8">
                 <!-- Profile Info Form -->
                 <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                    @include('profile.partials.update-profile-information-form')
+                    @include('admin.partials.update-profile-information-form')
                 </div>
 
                 <!-- Update Password Form -->
@@ -71,7 +71,7 @@
 
                 <!-- Delete Account Form -->
                 <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                    @include('profile.partials.delete-user-form')
+                    @include('admin.partials.delete-user-form')
                 </div>
             </div>
         </div>
