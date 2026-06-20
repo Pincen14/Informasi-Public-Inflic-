@@ -13,11 +13,13 @@ class Claim extends Model
 
     protected $fillable = [
         'item_id',
+        'user_id',
         'nama_pengambil',
         'NIMorKTP',
         'phone_pengambil',
         'foto_pengambil',
-        'tgl_ambil'
+        'tgl_ambil',
+        'status',
     ];
 
     public function item()

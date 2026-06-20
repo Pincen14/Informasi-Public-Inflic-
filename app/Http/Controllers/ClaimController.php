@@ -22,12 +22,13 @@ class ClaimController extends Controller
         $request->foto_pengambil->move(public_path('claims'), $foto);
 
         Claim::create([
-            'item_id' => $itemId,
-            'nama_pengambil' => $request->nama_pengambil,
-            'NIMorKTP' => $request->NIMorKTP,
+            'item_id'         => $itemId,
+            'user_id'         => auth()->id(),
+            'nama_pengambil'  => $request->nama_pengambil,
+            'NIMorKTP'        => $request->NIMorKTP,
             'phone_pengambil' => $request->phone_pengambil,
-            'foto_pengambil' => $foto,
-            'tgl_ambil' => $request->tgl_ambil
+            'foto_pengambil'  => $foto,
+            'tgl_ambil'       => $request->tgl_ambil
         ]);
 
         Item::find($itemId)->update(['status' => 'taken']);
