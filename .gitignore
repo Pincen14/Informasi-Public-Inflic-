@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+selenium-tests/.venv
+selenium-tests/.pytest_cache
+selenium-tests/__pycache__
